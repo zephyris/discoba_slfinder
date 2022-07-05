@@ -64,7 +64,11 @@ function getCommonEnd(seqs, len) {
 	var ends=getEndSeqs(seqs, len, "end");
 	var starts=getEndSeqs(seqs, len, "start");
 	for (start in starts) {
-		ends[start]=starts[start];
+		if (ends[start]) {
+			ends[start]+=starts[start]
+		} else {
+			ends[start]=starts[start];
+		}
 	}
 	var maxEnd=-1;
 	var endSeq="";
@@ -158,7 +162,7 @@ if (sls[0].prop<minProp) {
 	console.error("Reverse complement:");
 	console.log(revCompl(sl));
 	console.error("Frequency:");
-	console.log(slp);
+	console.log(""+Math.round(100000*slp)/100000);
 
 	var cumulativeProp=0;
 	for (var i=0; i<sls.length; i++) {
