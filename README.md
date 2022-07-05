@@ -8,6 +8,7 @@ The reported sequence does not remove any nucleotides which always follow the sp
 Two implementations of slfinder are included, one written in python, one in nodejs[^1].
 [^1]: The nodejs implementation is easily an order of magnitude faster than python3 and gives an identical output.
 
+
 Run using either:
 
 `python3 ../path/to/discoba_slfinder/slfinder.py transcriptome.fasta` or `nodejs ../path/to/discoba_slfinder/slfinder.js transcriptome.fasta`
