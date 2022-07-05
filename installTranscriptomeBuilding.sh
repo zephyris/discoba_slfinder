@@ -62,6 +62,9 @@ export PATH=$PATH:$SCRIPTDIR/salmon-v1.5.2/bin
 export PATH=$PATH:$SCRIPTDIR/trinityrnaseq-v2.12.0
 
 # Check everything runs and record versions
+# If versions_assembly.txt is lacking a version for anything then it hasn't installed correctly
+echo ""
+echo "Installed versions:"
 echo "rcorrector" $(perl $RCORRECTOR -version | sed "s/v//" | awk '{print $2}') > versions_assembly.txt
 echo "trimgalore" $($TRIMGALORE -v | grep "version" | sed "s/version//g") >> versions_assembly.txt
 echo "trinity" $(Trinity --version | grep "Trinity version:" | sed "s/Trinity version: Trinity-v//g") >> versions_assembly.txt

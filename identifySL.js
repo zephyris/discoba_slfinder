@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 //identifySL.js
 //Identifies spliced leader sequences from an assembled transcriptome
 //usage: nodejs identifySL.js <transcriptome.fasta>

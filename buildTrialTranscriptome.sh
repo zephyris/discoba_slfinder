@@ -1,5 +1,7 @@
 #!/bin/bash
+
 # builds a trial transcriptome from (optionally gz compressed) fastqs of illumina reads
+# accepts a single file for either unpaired or two files, one for each paired direction
 # for paired reads: buildTrialTranscriptome.sh forward.fastq[.gz] reverse.fastq[.gz]
 # for single reads: buildTrialTranscriptome.sh reads.fastq[.gz]
 
@@ -19,6 +21,8 @@ TRIMGALORE=$SCRIPTDIR/trimgalore-v0.6.0/trim_galore
 export PATH=$PATH:$SCRIPTDIR/salmon-v1.5.2/bin
 export PATH=$PATH:$SCRIPTDIR/trinityrnaseq-v2.12.0
 
+# check if assembly packages seem to be installed
+# nb. this doesn't check if each can actually run1
 if [ ! -f $SCRIPTDIR/versions_assembly.txt ]; then
   echo "Is the transcriptome build software correctly installed?"
   echo "Please run installTranscriptomeBuilding.sh"
@@ -37,7 +41,7 @@ fi
 # sl can be identified from relatively few mRNAs
 if [ -z "$2" ]; then
   # single end mode
-  echo "Running in single read mode: U: $1"
+  echo "Running in single read mode: Unpaired: $1"
   if [ "${1##*.}" == "gz" ]; then
     gzip -cd $1 | head -n 40000000 > U.fq
   else
@@ -51,7 +55,7 @@ if [ -z "$2" ]; then
   Trinity --seqType fq --max_memory $MEM --single U.cor.fq --CPU $CPUS --output trinitySub
 else
   # paired end mode
-  echo "Running in paired read mode: F: $1, R: $2"
+  echo "Running in paired read mode: Forward/1: $1, Reverse/2: $2"
   if [ "${1##*.}" == "gz" ]; then
     gzip -cd $1 | head -n 40000000 > F.fq
   else

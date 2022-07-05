@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #identifySL.py
 #Identifies spliced leader sequences from an assembled transcriptome
 #usage: python3 identifySL.py <transcriptome.fasta>
