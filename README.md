@@ -1,15 +1,15 @@
 # discoba_slfinder
 Simple tools for automated identification of spliced leader sequences from transcriptome sequencing.
 
-identifySL is a simple, and quite naive, tool for finding the most common sequence found in whole or in part at the start or end (reverse complemented) of sequences in a fasta file, excluding poly A. When run on a transcriptome in which an extremely large proportion of transcripts have a spliced leader from a common mini-exon this should identify the spliced leader sequence. This simple implementation is particularly suited to the many Discoba species which use a single spliced leader for all mRNAs.
+slfinder is a simple, and quite naive, tool for finding the most common sequence found in whole or in part at the start or end (reverse complemented) of sequences in a fasta file, excluding poly A. When run on a transcriptome in which an extremely large proportion of transcripts have a spliced leader from a common mini-exon this should identify the spliced leader sequence. This simple implementation is particularly suited to the many Discoba species which use a single spliced leader for all mRNAs.
 The reported sequence does not remove any nucleotides which always follow the splice site and do not come from the mini-exon, expected to be `TG` in kinetoplastids.
 
 ## Usage
-Two implementations of identifySL are included, one written in python, one in nodejs[^1].
+Two implementations of slfinder are included, one written in python, one in nodejs[^1].
 [^1]: The nodejs implementation is easily an order of magnitude faster than python3 and gives an identical output.
 Run using either:
 
-`python3 ../path/to/discoba_slfinder/identifySL.py transcriptome.fasta` or `nodejs ../path/to/discoba_slfinder/identifySL.js transcriptome.fasta`
+`python3 ../path/to/discoba_slfinder/slfinder.py transcriptome.fasta` or `nodejs ../path/to/discoba_slfinder/slfinder.js transcriptome.fasta`
 
 A verbose output is displayed in the console, for example:
 ```
@@ -53,7 +53,7 @@ Frequency of whole or partial sequence:
 ```
 
 To record the output, pipe to a file, for example:
-`python3 identifySL.py transcriptome.fasta > sl.txt`
+`python3 slfinder.py transcriptome.fasta > sl.txt`
 Only a minimal output of the identified spliced leader sequence, its reverse complement and its whole and whole or in part frequencies will be written to the file:
 ```
 AATAGAACAGTTTCTGTACTATATTG
