@@ -64,6 +64,8 @@ CAATATAGTACAGAAACTGTTCTATT
 0.58225
 ```
 
+Detected spliced leaders are very unlikely to be full length, but are likely long enough to be 'good enough' for trimming from reads to improve transcriptome assembly, mapping trans-splicing sites and identifying/quantifying unprocessed transcript.
+
 ## Transcriptome
 A fasta file of a de-novo assembled transcriptome is required as an input. A relatively low-quality transcriptome, ie. only the more abundant mRNAs, is OK and can be generated relatively quickly from a small number (eg. 1 million) of Illumina RNAseq reads. In general, transcriptomes built from longer reads and paired ends are better for spliced leader detection.
 
@@ -79,3 +81,6 @@ To build a transcriptome run:
 `bash ../path/to/discoba_slfinder/buildTrialTranscriptome.sh pairedreads_1.fastq.gz pairedreads_2.fastq.gz` or `bash ../path/to/discoba_slfinder/buildTrialTranscriptome.sh unpairedreads.fastq`
 
 The trial transcriptome is output to `trinityTrial/Trinity.fasta`.
+
+## Citing
+Please cite [https://doi.org/10.1371/journal.pone.0259871](doi:10.1371/journal.pone.0259871) if you use this tool. This is a tidied and more neatly packaged version of code used to improve de-novo transcriptome assembly in [https://github.com/zephyris/discoba_alphafold](zephyris/discoba_alphafold).
