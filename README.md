@@ -84,4 +84,4 @@ To build a transcriptome run:
 The trial transcriptome is output to `trinityTrial/Trinity.fasta`.
 
 ## Citing
-Please cite [https://doi.org/10.1371/journal.pone.0259871](doi:10.1371/journal.pone.0259871) if you use this tool. This is a tidied and more neatly packaged version of code used to improve de-novo transcriptome assembly in [https://github.com/zephyris/discoba_alphafold](zephyris/discoba_alphafold).
+Please cite [doi:10.1371/journal.pone.0259871](https://doi.org/10.1371/journal.pone.0259871) if you use this tool. This is a tidied and more neatly packaged version of code used to improve de-novo transcriptome assembly in [zephyris/discoba_alphafold](https://github.com/zephyris/discoba_alphafold).
