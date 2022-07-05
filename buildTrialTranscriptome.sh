@@ -51,8 +51,9 @@ if [ -z "$2" ]; then
   perl $RCORRECTOR -t $CPUS -s U.fq
   $TRIMGALORE --output_dir tgl --length 36 -q 5 --stringency 1 -e 0.1 U.cor.fq
   mv tgl/U.cor_trimmed.fq U.cor.fq
+  rm -r tgl
   #Trial Trinity transcriptome assembly
-  Trinity --seqType fq --max_memory $MEM --single U.cor.fq --CPU $CPUS --output trinitySub
+  Trinity --seqType fq --max_memory $MEM --single U.cor.fq --CPU $CPUS --output trinityTrial
 else
   # paired end mode
   echo "Running in paired read mode: Forward/1: $1, Reverse/2: $2"
@@ -75,6 +76,7 @@ else
   mv tgl/unfixrm_F.cor_unpaired_1.fq U.cor.fq
   cat tgl/unfixrm_R.cor_unpaired_2.fq >> U.cor.fq
   rm tgl/unfixrm_R.cor_unpaired_2.fq
+  rm -r tgl
   #Trial Trinity transcriptome assembly
-  Trinity --seqType fq --max_memory $MEM --left F.cor.fq --right R.cor.fq --CPU $CPUS --output trinitySub
+  Trinity --seqType fq --max_memory $MEM --left F.cor.fq --right R.cor.fq --CPU $CPUS --output trinityTrial
 fi

@@ -143,10 +143,11 @@ else:
 	print(sl)
 	print_status("Reverse complement:")
 	print(revCompl(sl))
-	print_status("Frequency:")
+	print_status("Frequency of full length sequence:")
 	print(str(round(slp, 5)))
 	cumulativeProp = 0
 	for csl in sls:
 		if csl["seq"] in sl:
 			cumulativeProp += csl["prop"]
-	print_status("Found on "+str(round(100*cumulativeProp, 2))+"% of transcripts")
+	print_status("Frequency of whole or partial sequence:")
+	print(str(round(cumulativeProp, 5)))

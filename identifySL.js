@@ -161,7 +161,7 @@ if (sls[0].prop<minProp) {
 	console.log(sl);
 	console.error("Reverse complement:");
 	console.log(revCompl(sl));
-	console.error("Frequency:");
+	console.error("Frequency of full length sequence:");
 	console.log(""+Math.round(100000*slp)/100000);
 
 	var cumulativeProp=0;
@@ -170,5 +170,6 @@ if (sls[0].prop<minProp) {
 			cumulativeProp+=sls[i].prop;
 		}
 	}
-	console.error("Found on "+Math.round(100*100*cumulativeProp)/100+"%"+" of transcripts");
+	console.error("Frequency of whole or partial sequence:")
+	console.log(""+Math.round(100000*cumulativeProp)/100000);
 }
