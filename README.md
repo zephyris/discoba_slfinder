@@ -57,7 +57,7 @@ Frequency of whole or partial sequence:
 To record the output, pipe the output to a file. For example:
 `python3 slfinder.py transcriptome.fasta > sl.txt`
 
-Only a minimal output of the identified spliced leader sequence, its reverse complement and its whole and whole or in part frequencies will be written to the file. In this example, `sl.txt` will contain:
+Only a minimal output of the identified spliced leader sequence, its reverse complement and its whole and whole or in part frequencies, will be written to the file. In this example, `sl.txt` will contain:
 ```
 AATAGAACAGTTTCTGTACTATATTG
 CAATATAGTACAGAAACTGTTCTATT
@@ -68,7 +68,7 @@ CAATATAGTACAGAAACTGTTCTATT
 Detected spliced leaders are very unlikely to be full length, but are likely long enough to be 'good enough' for trimming from reads to improve transcriptome assembly, mapping trans-splicing sites and identifying/quantifying unprocessed transcript.
 
 ## Transcriptome
-A fasta file of a de-novo assembled transcriptome is required as an input. A relatively low-quality transcriptome, ie. only the more abundant mRNAs, is OK and can be generated relatively quickly from a small number (eg. 1 million) of Illumina RNAseq reads. In general, transcriptomes built from longer reads and paired ends are better for spliced leader detection.
+A fasta file of a de-novo assembled transcriptome is required as an input. A relatively low-quality transcriptome, ie. only the more abundant mRNAs, is OK and can be generated relatively quickly from relatively few (eg. 1 million) Illumina RNAseq reads. In general, transcriptomes built from longer reads and paired ends are better for spliced leader detection.
 
 `buildTrialTranscriptome.sh` is provided to perform a simple de-novo build from Illumina `.fastq` or `.fastq.gz` files.
 To use, first install the necessary dependencies:
