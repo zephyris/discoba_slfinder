@@ -8,7 +8,7 @@ fi
 # apt-get installations
 sudo apt-get update
 # general packages
-sudo apt-get --yes install curl python3 python3-pip
+sudo apt-get --yes install curl python3 python3-pip git
 # assembly packages
 sudo apt-get --yes install cutadapt jellyfish bowtie2 samtools
 # dependencies for building trinity
