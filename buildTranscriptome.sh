@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 # builds a transcriptome from (optionally gz compressed) fastqs of illumina reads
 # accepts a single file for either unpaired or two files, one for each paired direction
@@ -86,8 +86,6 @@ fi
 echo "Building transcriptome using program versions:"
 cat $SCRIPTDIR/versions_assembly.txt
 
-TRIMLINES=$(( READNUMBER*4 ))
-
 SPLICEDLEADERF=${SPLICEDLEADERF^^}
 SPLICEDLEADERR=$(echo $SPLICEDLEADERF | rev | tr ATCG TAGC)
 echo "Spliced leader:" $SPLICEDLEADERF
@@ -101,24 +99,77 @@ fi
 mkdir $OUTDIR
 cd $OUTDIR
 
-# assembly
-if [ -z "$2" ]; then
-  # single end mode
-  echo "Running in single read mode: Unpaired: $1"
-  # extract reads, trim to requested number if trimlines is non-zero
-  if [ "${1##*.}" == "gz" ]; then
-    if [ $TRIMLINES == 0 ]; then
-      gzip -cd ../$1 > U.fq
+# samplereads input.fq(.gz) number output.fa
+samplereads() {
+  echo "Sampling $2 reads from $1, to $3"
+  if [ $2 == 0 ]; then
+    echo "No sampling, use all reads"
+    if [ "${1##*.}" == "gz" ]; then
+      gzip -d -c ../$1 > $3
     else
-      gzip -cd ../$1 | head -n $TRIMLINES > U.fq
+      cat ../$1 > $3
     fi
   else
-    if [ $TRIMLINES == 0 ]; then
-      cat ../$1 > U.fq
+    # ?just use seqtk sample two pass mode?
+    # number of reads available
+    echo "Counting reads available..."
+    if [ "${1##*.}" == "gz" ]; then
+      READCOUNT=$(gzip -d -c ../$1 | wc -l)
+    else
+      READCOUNT=$(cat ../$1 | wc -l)
+    fi
+    echo "$READCOUNT reads available"
+    # if subsampling is required
+    if [ $READCOUNT -gt $2 ]; then
+      # calculate subsampling factor (_much_ lower memory use than set read number)
+      SAMPLEFAC=$(echo "scale=8; ($2/$READCOUNT)" | bc | sed 's/^\./0./')
+      echo "Subsample factor: $SAMPLEFAC"
+      # do subsampling with fixed seed
+      if [ "${1##*.}" == "gz" ]; then
+        gzip -d -c ../$1 | seqtk sample -s1337 - $2 > $3
+      else
+        cat ../$1 | seqtk sample -s1337 - $2 > $3
+      fi
+    else
+      # otherwise, just output everything
+      echo "More reads requested than available, using all reads"
+      if [ "${1##*.}" == "gz" ]; then
+        gzip -d -c ../$1 > $3
+      else
+        cat ../$1 > $3
+      fi
+    fi
+  fi
+}
+
+# samplereads input.fq(.gz) number output.fa
+samplereads_simple() {
+  echo "Sampling $2 reads from $1, to $3"
+  if [ $2 == 0 ]; then
+    echo "No sampling, use all reads"
+    if [ "${1##*.}" == "gz" ]; then
+      gzip -d -c ../$1 > $3
+    else
+      cat ../$1 > $3
+    fi
+  else
+    echo "Using first $2 reads"
+    READNUMBER=$2
+    TRIMLINES=$(( READNUMBER*4 ))
+    if [ "${1##*.}" == "gz" ]; then
+      gzip -cd ../$1 | head -n $TRIMLINES > U.fq
     else
       cat ../$1 | head -n $TRIMLINES > U.fq
     fi
   fi
+}
+
+# assembly
+if [ -z "$2" ]; then
+  # single end mode
+  echo "Running in single read mode: Unpaired: $1"
+  # extract reads, trim to requested number if readnumber is non-zero
+  samplereads $1 $READNUMBER U.fq
   #Use standard correction, filtering, trimming
   perl $RCORRECTOR -t $CPUS -s U.fq
   $TRIMGALORE --output_dir tgl --length 36 -q 5 --stringency 1 -e 0.1 U.cor.fq
@@ -132,37 +183,13 @@ if [ -z "$2" ]; then
     echo "Not performing spliced leader trimming"
   fi
   #Trinity transcriptome assembly
-  Trinity --seqType fq --max_memory $MEM --single U.cor.fq --CPU $CPUS --output trinityTrial
+  Trinity --seqType fq --max_memory $MEM --single U.cor.fq --CPU $CPUS --output $OUTDIR --jaccard_clip
 else
   # paired end mode
   echo "Running in paired read mode: Left/Forward/1: $1, Right/Reverse/2: $2"
-  # extract reads, trim to requested number if trimlines is non-zero
-  if [ "${1##*.}" == "gz" ]; then
-    if [ $TRIMLINES == 0 ]; then
-      gzip -cd ../$1 > F.fq
-    else
-      gzip -cd ../$1 | head -n $TRIMLINES > F.fq
-    fi
-  else
-    if [ $TRIMLINES == 0 ]; then
-      cat ../$1 > F.fq
-    else
-      cat ../$1 | head -n $TRIMLINES > F.fq
-    fi
-  fi
-  if [ "${2##*.}" == "gz" ]; then
-    if [ $TRIMLINES == 0 ]; then
-      gzip -cd ../$2 > R.fq
-    else
-      gzip -cd ../$2 | head -n $TRIMLINES > R.fq
-    fi
-  else
-    if [ $TRIMLINES == 0 ]; then
-      cat ../$2 > R.fq
-    else
-      cat ../$2 | head -n $TRIMLINES > R.fq
-    fi
-  fi
+  # extract reads, trim to requested number if readnumber is non-zero
+  samplereads $1 $READNUMBER F.fq
+  samplereads $2 $READNUMBER R.fq
   #Use standard correction, filtering, trimming
   perl $RCORRECTOR -t $CPUS -1 F.fq -2 R.fq
   python $FILTERUNCORR -1 F.cor.fq -2 R.cor.fq -s cor
@@ -182,7 +209,7 @@ else
     echo "Not performing spliced leader trimming"
   fi
   #Trinity transcriptome assembly
-  Trinity --seqType fq --max_memory $MEM --left F.cor.fq --right R.cor.fq --CPU $CPUS --output trinity
+  Trinity --seqType fq --max_memory $MEM --left F.cor.fq --right R.cor.fq --CPU $CPUS --output $OUTDIR --jaccard_clip
 fi
 
 # move files to output location and tidy
